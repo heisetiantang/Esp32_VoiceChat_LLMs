@@ -11,6 +11,8 @@
 #include "Audio2.h"
 #include "mp3_decoder/mp3_decoder.h"
 
+// 播放
+
 //---------------------------------------------------------------------------------------------------------------------
 AudioBuffer::AudioBuffer(size_t maxBlockSize)
 {
@@ -5854,6 +5856,8 @@ void Audio2::printDecodeError(int r)
     // }
 }
 //---------------------------------------------------------------------------------------------------------------------
+// 用于设置音频输入和输出的引脚。
+// BCLK、LRC、DOUT、DIN和MCK分别是时钟、数据、输入、输出和主时钟的引脚编号或常量。
 bool Audio2::setPinout(uint8_t BCLK, uint8_t LRC, uint8_t DOUT, int8_t DIN, int8_t MCK)
 {
 

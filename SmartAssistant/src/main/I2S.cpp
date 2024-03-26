@@ -38,6 +38,7 @@ I2S::I2S()
   i2s_set_clk(I2S_NUM_0, SAMPLE_RATE, BITS_PER_SAMPLE, I2S_CHANNEL_STEREO);
 }
 
+
 int I2S::Read(char *data, int numData)
 {
   size_t bytesRead;

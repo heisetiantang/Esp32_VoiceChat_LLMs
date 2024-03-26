@@ -14,10 +14,11 @@ using namespace websockets;
 #define led3 2
 #define led2 18
 #define led1 19
+// WiFi 名称和密码
 const char *wifiData[][2] = {
-    {"111", "12345678"}, // 替换为自己常用的wifi名和密码
+    {"111", "12345678"}, 
     {"222", "12345678"},
-    // 继续添加需要的 Wi-Fi 名称和密码
+    
 };
 
 bool ledstatus = true;
@@ -605,21 +606,30 @@ void getUrl()//鉴权
     client1.stop();
 }
 
+
 void setup()
 {
-
+    // 串口通讯频率
     // Serial.begin(921600);
     Serial.begin(115200);
+
     // pinMode(ADC,ANALOG);
+    /* 
+    名为 key 的引脚设置为输入模式，并启用内部上拉电阻。
+    将 34 和 35 号引脚设置为输入模式，并启用内部上拉电阻
+     */
     pinMode(key, INPUT_PULLUP);
     pinMode(34, INPUT_PULLUP);
     pinMode(35, INPUT_PULLUP);
+    // 名为 led1, led2 和 led3 的引脚设置为输出模式，用于控制 LED 灯。
     pinMode(led1, OUTPUT);
     pinMode(led2, OUTPUT);
     pinMode(led3, OUTPUT);
+    // 初始化输出类函数
     audio1.init();
-
+    // 计算可用wifi数量
     int numNetworks = sizeof(wifiData) / sizeof(wifiData[0]);
+    // 连接wifi
     wifiConnect(wifiData, numNetworks);
 
     audio2.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
@@ -744,10 +754,12 @@ void checkLen(JsonArray textArray)
     // return textArray;
 }
 
+// 生成一个包含聊天请求参数的 JSON 文档。
 DynamicJsonDocument gen_params(const char *appid, const char *domain)
 {
+    // 声明了一个 DynamicJsonDocument类型的变量 data
     DynamicJsonDocument data(2048);
-
+    // 嵌套创建header、parameter,chat,payload等json对象
     JsonObject header = data.createNestedObject("header");
     header["app_id"] = appid;
     header["uid"] = "1234";

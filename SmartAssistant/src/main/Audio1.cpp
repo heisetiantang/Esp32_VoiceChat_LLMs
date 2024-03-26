@@ -1,8 +1,9 @@
 #include "Audio1.h"
 
+// å½•éŸ³æ„é€ å‡½æ•°
 Audio1::Audio1()
 {
-  // ¹¹Ôìº¯ÊıÖĞ½ö×ö»ù±¾µÄ³õÊ¼»¯£¬²»·ÖÅä´ó¿éÄÚ´æ»òÆäËû¿ÉÄÜÒıÆğÎÊÌâµÄ²Ù×÷
+  //
   wavData = nullptr;
   i2s = nullptr;
   i2s = new I2S();
@@ -11,7 +12,7 @@ Audio1::Audio1()
   // for (int i = 0; i < wavDataSize/dividedWavDataSize; ++i) wavData[i] = new char[dividedWavDataSize];
   // i2s = new I2S(micType);
 }
-
+// ææ„å‡½æ•°
 Audio1::~Audio1()
 {
   for (int i = 0; i < wavDataSize / dividedWavDataSize; ++i)
@@ -20,6 +21,7 @@ Audio1::~Audio1()
   delete i2s;
 }
 
+// åˆå§‹åŒ–å‡½æ•°
 void Audio1::init()
 {
   wavData = new char *[1];
@@ -27,11 +29,13 @@ void Audio1::init()
     wavData[i] = new char[1280];
 }
 
+// æ¸…ç©ºæŒ‡é’ˆ
 void Audio1::clear()
 {
   i2s->clear();
 }
 
+// åˆ›å»º WAV æ–‡ä»¶å¤´éƒ¨åˆ†ã€‚
 void Audio1::CreateWavHeader(byte *header, int waveDataSize)
 {
   header[0] = 'R';
@@ -55,7 +59,7 @@ void Audio1::CreateWavHeader(byte *header, int waveDataSize)
   header[17] = 0x00;
   header[18] = 0x00;
   header[19] = 0x00;
-  header[20] = 0x01; // linear PCM
+  header[20] = 0x01; // éŸ³é¢‘é€šé“æ•°ï¼Œ1 è¡¨ç¤ºå•å£°é“
   header[21] = 0x00;
   header[22] = 0x01; // monoral
   header[23] = 0x00;
@@ -81,6 +85,7 @@ void Audio1::CreateWavHeader(byte *header, int waveDataSize)
   header[43] = (byte)((waveDataSize >> 24) & 0xFF);
 }
 
+// ç”¨äºä»I2Sè®¾å¤‡è¯»å–éŸ³é¢‘æ•°æ®å¹¶å°†å…¶å­˜å‚¨åˆ°wavDataæ•°ç»„ä¸­
 void Audio1::Record()
 {
 
@@ -129,6 +134,7 @@ void Audio1::Record()
   // return Question;
 }
 
+// è§£æ JSON æ•°æ®å¹¶è¿”å›å­—ç¬¦ä¸²ã€‚
 String Audio1::parseJSON(const char *jsonResponse)
 {
   DynamicJsonDocument doc(1024);
@@ -142,29 +148,27 @@ String Audio1::parseJSON(const char *jsonResponse)
     return String("");
   }
 
-  // æå–å¹¶è¿”å›?"question"
+  // æå–å¹¶è¿”ï¿½?"question"
   const char *question = doc["result"][0];
   return String(question);
 }
 
+// è®¡ç®—éŸ³é¢‘æ•°æ®çš„å‡æ–¹æ ¹ï¼ˆRMSï¼‰å€¼ã€‚
 float Audio1::calculateRMS(uint8_t *buffer, int bufferSize)
 {
   float sum = 0;
   int16_t sample;
 
-  // Ã¿´Îµü´ú´¦ÀíÁ½¸ö×Ö½Ú£¨16Î»£©
+  // 
   for (int i = 0; i < bufferSize; i += 2)
   {
-    // ´Ó»º³åÇøÖĞ»ñÈ¡16Î»Ñù±¾£¬¿¼ÂÇµ½×Ö½ÚË³Ğò
+    
     sample = (buffer[i + 1] << 8) | buffer[i];
 
-    // ¼ÆËãÑù±¾µÄÆ½·½²¢ÀÛ¼Ó
     sum += sample * sample;
   }
 
-  // ¼ÆËãÆ½¾ùÖµ
   sum /= (bufferSize / 2);
 
-  // ·µ»ØRMSÖµ
   return sqrt(sum);
 }
