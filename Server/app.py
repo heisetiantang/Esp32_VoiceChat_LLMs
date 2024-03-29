@@ -32,16 +32,18 @@ app = Flask(__name__)
 
 @app.route('/whf', methods=['GET'])
 def handle_request():
+    # 星火大模型链接
     host = urlparse(Spark_url).netloc
     path = urlparse(Spark_url).path
     now = datetime.now()
+    # Python 中使用时间戳来格式化日期时间
     date = format_date_time(mktime(now.timetuple()))
 
     # 拼接字符串
     signature_origin = "host: " + host + "\n"
     signature_origin += "date: " + date + "\n"
     signature_origin += "GET " + path + " HTTP/1.1"
-    # 进行hmac-sha256进行加密
+    # 进行hmac-sha256进行加密，哈希运算
     signature_sha = hmac.new(APISecret.encode('utf-8'), signature_origin.encode('utf-8'),
                              digestmod=hashlib.sha256).digest()
     signature_sha_base64 = base64.b64encode(

@@ -159,6 +159,7 @@ void onMessageCallback(WebsocketsMessage message)
     }
 }
 
+// 大模型回复
 void onEventsCallback(WebsocketsEvent event, String data)
 {
     if (event == WebsocketsEvent::ConnectionOpened)
@@ -184,6 +185,7 @@ void onEventsCallback(WebsocketsEvent event, String data)
     }
 }
 
+// 服务器送回来的文字消息
 void onMessageCallback1(WebsocketsMessage message)
 {
     StaticJsonDocument<4096> jsonDocument;
@@ -262,6 +264,8 @@ void onMessageCallback1(WebsocketsMessage message)
                 }
                 else
                 {
+                    // 重点，服务器在这里进行不断存储，保存上下文，将所有的发送给大模型，不断累计
+                    // 达到有记忆的效果
                     getText("user", askquestion);
                     Serial.print("text:");
                     Serial.println(text);
@@ -280,8 +284,10 @@ void onMessageCallback1(WebsocketsMessage message)
     }
 }
 
+// 处理收到事件
 void onEventsCallback1(WebsocketsEvent event, String data)
 {
+    // 成功连接
     if (event == WebsocketsEvent::ConnectionOpened)
     {
         Serial.println("Send message to xunfeiyun");
@@ -297,6 +303,7 @@ void onEventsCallback1(WebsocketsEvent event, String data)
             doc.clear();
             JsonObject data = doc.createNestedObject("data");
             audio1.Record();
+            // 平均音量和阈值比较
             float rms = calculateRMS((uint8_t *)audio1.wavData[0], 1280);
             printf("%d %f\n", 0, rms);
             if (rms < noise)
@@ -337,6 +344,7 @@ void onEventsCallback1(WebsocketsEvent event, String data)
                 delay(40);
                 break;
             }
+            // 刚开始送的数据
             if (firstframe == 1)
             {
                 data["status"] = 0;
@@ -390,6 +398,8 @@ void onEventsCallback1(WebsocketsEvent event, String data)
         Serial.println("Got a Pong!");
     }
 }
+
+// 连接大模型
 void ConnServer()
 {
     Serial.println("url:" + url);
@@ -408,9 +418,11 @@ void ConnServer()
     }
 }
 
+// 调用语音识别和语音合成的API
 void ConnServer1()
 {
     // Serial.println("url1:" + url1);
+    // 注册两个服务器返回消息的函数
     webSocketClient1.onMessage(onMessageCallback1);
     webSocketClient1.onEvent(onEventsCallback1);
     // Connect to WebSocket
@@ -536,17 +548,20 @@ void wifiConnect(const char *wifiData[][2], int numNetworks)
 void getUrl()//鉴权
 {
     WiFiClient client;
+    // 自己的云服务器
     if (!client.connect("192.168.0.1", 5000)) // 自己做的鉴权的服务器，用flask，端口设为5000，可自定义
     {
         Serial.println("Connection failed");
         return;
     }
 
+    // 连接成功
     client.print(String("GET /whf HTTP/1.1\r\n") +
                  "Host: 192.168.0.1" + "\r\n" + // 自己做的鉴权的服务器
                  "Connection: close\r\n\r\n");
     Serial.println("try to read from Tencent cloud");
     unsigned long startTime = millis();
+    // 是否在4s内收到数据
     while (client.available() == 0)
     {
         digitalWrite(led1, ledstatus);
@@ -560,12 +575,13 @@ void getUrl()//鉴权
             break;
         }
     }
-
+    // 获取返回的信息
     while (client.available())
     {
         url = client.readStringUntil('\r');
         url.trim();
         Serial.print(url);
+        // 蓝色的LED灯亮
         digitalWrite(led1, HIGH);
     }
     client.stop();
@@ -643,17 +659,19 @@ void setup()
 
 void loop()
 {
-
+    //调用语音识别和语音合成 
     webSocketClient.poll();
     webSocketClient1.poll();
     // delay(10);
     if (startPlay)
     {
+        // 播放声音
         voicePlay();
     }
     audio2.loop();
     if (audio2.isplaying == 1)
     {
+        // 讲话的时候亮绿灯
         digitalWrite(led3, HIGH);
     }
     else
@@ -665,7 +683,7 @@ void loop()
             getUrl();
         }
     }
-
+    // 环境噪音调节
     if (digitalRead(35) == 0)
     {
         if (millis() > pushTime + 200)
@@ -686,6 +704,7 @@ void loop()
             Serial.println(noise);
         }
     }
+    // 录制按钮
     if (digitalRead(key) == 0)
     {
         audio2.isplaying = 0;

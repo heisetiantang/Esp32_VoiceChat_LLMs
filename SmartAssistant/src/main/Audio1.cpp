@@ -88,7 +88,7 @@ void Audio1::CreateWavHeader(byte *header, int waveDataSize)
 // 用于从I2S设备读取音频数据并将其存储到wavData数组中
 void Audio1::Record()
 {
-
+  // 读取音频数据 大概0.3秒，一秒 2个字节*8000
   i2s->Read(i2sBuffer, i2sBufferSize);
   for (int i = 0; i < i2sBufferSize / 8; ++i)
   {
