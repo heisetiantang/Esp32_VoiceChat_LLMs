@@ -148,7 +148,7 @@ String Audio1::parseJSON(const char *jsonResponse)
     return String("");
   }
 
-  // 提取并返�?"question"
+  // 提取并返?"question"
   const char *question = doc["result"][0];
   return String(question);
 }

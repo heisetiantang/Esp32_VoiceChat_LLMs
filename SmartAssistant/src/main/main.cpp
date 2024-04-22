@@ -16,7 +16,7 @@ using namespace websockets;
 #define led1 19
 // WiFi 名称和密码
 const char *wifiData[][2] = {
-    {"111", "12345678"}, 
+    {"30", "00000000"}, 
     {"222", "12345678"},
     
 };
@@ -62,7 +62,7 @@ DynamicJsonDocument gen_params(const char *appid, const char *domain);
 String askquestion = "";
 String Answer = "";
 
-const char *appId1 = "";  // 替换为自己的星火大模型参数
+const char *appId1 = "7a20f7b4";  // 替换为自己的星火大模型参数
 const char *domain1 = "generalv3"; 
 const char *websockets_server = "ws://spark-api.xf-yun.com/v3.1/chat";
 const char *websockets_server1 = "ws://ws-api.xfyun.cn/v2/iat";

@@ -12,9 +12,9 @@ from urllib.parse import urlencode
 from wsgiref.handlers import format_date_time
 
 # 以下密钥信息从控制台获取
-Appid = ""  # 填写控制台中获取的 APPID 信息
-APISecret = ""  # 填写控制台中获取的 APISecret 信息
-APIKey = ""  # 填写控制台中获取的 APIKey 信息
+Appid = "7a20f7b4"  # 填写控制台中获取的 APPID 信息
+APISecret = "YmVlZTkxNjBlOGFiNWZjNjg5ZDdkZjRk"  # 填写控制台中获取的 APISecret 信息
+APIKey = "e8bd2048820f94f9ec1fdd896efd5ae2"  # 填写控制台中获取的 APIKey 信息
 
 # 用于配置大模型版本，默认“general/generalv2”
 domain = "generalv3"   # v3版本
